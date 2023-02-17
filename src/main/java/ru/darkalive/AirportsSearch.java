@@ -10,7 +10,7 @@ public class AirportsSearch {
 
     public AirportsSearch(String queryString, byte columnNum) {
 
-        this.queryString = queryString;
+        this.queryString = queryString.toLowerCase();
         this.columnNum = columnNum;
     }
 
@@ -27,9 +27,9 @@ public class AirportsSearch {
         BufferedReader csvBufferedReader = new BufferedReader(csvFileReader);
         String parsedLine;
         while ((parsedLine = csvBufferedReader.readLine()) != null) {
-            String foundValue = parsedLine.split(",")[columnNum - 1];
-            if (foundValue.startsWith(queryString) || foundValue.startsWith("\"" + queryString)) {
-                System.out.println("\"" + foundValue + "\"[" + parsedLine + "]");
+            String foundValue = parsedLine.split(",")[columnNum - 1].replace("\"", "").toLowerCase();
+            if (foundValue.startsWith(queryString)) {
+                System.out.println(foundValue + "[" + parsedLine + "]");
                 resultsCount++;
             }
         }
