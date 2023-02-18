@@ -1,15 +1,21 @@
 package ru.darkalive;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
         String queryString;
         int resultsCount;
+        AirportsSearch airportsSearch = new AirportsSearch(Byte.parseByte(args[0]));
+        try {
+            System.out.println("Затраченное время на обработку файла - " + airportsSearch.startFileReading() + " мс");
+        } catch (IOException e) {
+            System.out.println("Ошибка чтения файла, пожалуйста, перезапустите приложение\n" + e.getMessage() + "\n");
+            return;
+        }
 
         while (true) {
 
@@ -25,9 +31,8 @@ public class Main {
             }
             if (queryString.equals("!quit")) break;
 
-            AirportsSearch airportsSearch = new AirportsSearch(queryString, Byte.parseByte(args[0]));
             try {
-                resultsCount = airportsSearch.startSearch();
+                resultsCount = airportsSearch.startSearch(queryString);
             } catch (IOException e) {
                 System.out.println("Ошибка!!!\n" + e.getMessage() + "\n");
                 continue;
