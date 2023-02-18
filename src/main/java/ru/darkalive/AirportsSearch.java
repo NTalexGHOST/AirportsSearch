@@ -48,15 +48,17 @@ public class AirportsSearch {
         long startOutputTime = System.nanoTime();
 
         RandomAccessFile csvRandomAccessFile = new RandomAccessFile("airports.csv", "r");
+        PrintWriter output = new PrintWriter(System.out);
         foundValues.stream().forEach(str -> {
             try {
                 csvRandomAccessFile.seek(columnInfo.get(str));
-                System.out.println(str + "[" + csvRandomAccessFile.readLine() + "]");
+                output.println(str + "[" + csvRandomAccessFile.readLine() + "]");
             } catch (IOException e) {
                 System.out.println("Произошла ошибка во время поиска\r\n" + e.getMessage() + "\r\n");
             }
         } );
 
+        output.flush();
         csvRandomAccessFile.close();
         long endOutputTime = System.nanoTime();
         System.out.println("\r\nЗатраченное на вывод найденных записей время - " + ((endOutputTime - startOutputTime) / 1000000) + " мс");
