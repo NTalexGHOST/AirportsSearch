@@ -9,7 +9,15 @@ public class Main {
 
         String queryString;
         int resultsCount;
-        AirportsSearch airportsSearch = new AirportsSearch(Byte.parseByte(args[0]));
+        byte columnNum;
+        try {
+            columnNum = Byte.parseByte(args[0]);
+            if (columnNum < 1 || columnNum > 14) throw new NumberFormatException();
+        } catch (NumberFormatException e) {
+            System.out.println("Ошибка во введенном аргументе");
+            return;
+        }
+        AirportsSearch airportsSearch = new AirportsSearch(columnNum);
         try {
             System.out.println("Затраченное на обработку файла время - " + airportsSearch.startFileReading() + " мс\r\n");
         } catch (IOException e) {
