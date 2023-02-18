@@ -11,9 +11,9 @@ public class Main {
         int resultsCount;
         AirportsSearch airportsSearch = new AirportsSearch(Byte.parseByte(args[0]));
         try {
-            System.out.println("Затраченное время на обработку файла - " + airportsSearch.startFileReading() + " мс");
+            System.out.println("Затраченное на обработку файла время - " + airportsSearch.startFileReading() + " мс\r\n");
         } catch (IOException e) {
-            System.out.println("Ошибка чтения файла, пожалуйста, перезапустите приложение\n" + e.getMessage() + "\n");
+            System.out.println("Ошибка чтения файла, пожалуйста, перезапустите приложение\r\n" + e.getMessage());
             return;
         }
 
@@ -24,9 +24,9 @@ public class Main {
             BufferedReader queryBufferedReader = new BufferedReader(queryStreamReader);
 
             try {
-                queryString = queryBufferedReader.readLine();
+                queryString = queryBufferedReader.readLine().toLowerCase();
             } catch (IOException e) {
-                System.out.println("Ошибка!!!\n" + e.getMessage() + "\n");
+                System.out.println("Ошибка во введенном значении\r\n" + e.getMessage() + "\r\n");
                 continue;
             }
             if (queryString.equals("!quit")) break;
@@ -34,12 +34,12 @@ public class Main {
             try {
                 resultsCount = airportsSearch.startSearch(queryString);
             } catch (IOException e) {
-                System.out.println("Ошибка!!!\n" + e.getMessage() + "\n");
+                System.out.println("Произошла ошибка во время поиска\r\n" + e.getMessage() + "\r\n");
                 continue;
             }
 
             System.out.println("Количество найденных строк - " + resultsCount + "; " +
-                    "затраченное на поиск время - " + airportsSearch.getSearchTime() + " мс\n");
+                    "затраченное на поиск время - " + airportsSearch.getSearchTime() + " мс\r\n");
         }
     }
 }
