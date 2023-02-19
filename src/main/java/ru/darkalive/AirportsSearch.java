@@ -33,7 +33,7 @@ public class AirportsSearch {
         long startTime = System.nanoTime();
 
         columnInfo = new TreeMap<>();
-        BufferedRandomAccessFile csvBufferedRandomAccessFile = new BufferedRandomAccessFile("airports.csv", "r", 2048);
+        BufferedRandomAccessFile csvBufferedRandomAccessFile = new BufferedRandomAccessFile("airports.csv", "r", 8192);
         String currentLine; long currentFilePointer = 0L;
         while ((currentLine = csvBufferedRandomAccessFile.readLine()) != null) {
             columnInfo.put(getColumnValue(currentLine), currentFilePointer);
@@ -58,7 +58,7 @@ public class AirportsSearch {
 
         long startOutputTime = System.nanoTime();
 
-        BufferedRandomAccessFile csvBufferedRandomAccessFile = new BufferedRandomAccessFile("airports.csv", "r", 2048);
+        BufferedRandomAccessFile csvBufferedRandomAccessFile = new BufferedRandomAccessFile("airports.csv", "r", 8192);
         PrintWriter output = new PrintWriter(System.out);
         foundValues.forEach(str -> {
             try {
