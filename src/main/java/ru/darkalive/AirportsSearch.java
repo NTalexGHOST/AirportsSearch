@@ -49,7 +49,7 @@ public class AirportsSearch {
 
         RandomAccessFile csvRandomAccessFile = new RandomAccessFile("airports.csv", "r");
         PrintWriter output = new PrintWriter(System.out);
-        foundValues.stream().forEach(str -> {
+        foundValues.forEach(str -> {
             try {
                 csvRandomAccessFile.seek(columnInfo.get(str));
                 output.println(str + "[" + csvRandomAccessFile.readLine() + "]");
