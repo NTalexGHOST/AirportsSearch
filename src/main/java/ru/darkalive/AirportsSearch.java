@@ -1,5 +1,7 @@
 package ru.darkalive;
 
+import org.apache.fontbox.ttf.BufferedRandomAccessFile;
+
 import java.io.*;
 import java.util.List;
 import java.util.SortedMap;
@@ -25,20 +27,20 @@ public class AirportsSearch {
         if (columnLine.indexOf(',') != -1) return columnLine.substring(0, columnLine.indexOf(','));
         else return columnLine;
     }
+
     public long startFileReading() throws IOException {
 
         long startTime = System.nanoTime();
 
         columnInfo = new TreeMap<>();
-        RandomAccessFile csvRandomAccessFile = new RandomAccessFile("airports.csv", "r");
-        FileReader csvFileReader = new FileReader(csvRandomAccessFile.getFD());
-        BufferedReader csvBufferedReader = new BufferedReader(csvFileReader);
-        String line; long currentFilePointer = 0L;
-        while ((line = csvBufferedReader.readLine()) != null) {
-            columnInfo.put(getColumnValue(line), currentFilePointer);
-            currentFilePointer = csvRandomAccessFile.getFilePointer();
+        BufferedRandomAccessFile csvBufferedRandomAccessFile = new BufferedRandomAccessFile("airports.csv", "r", 2048);
+        String currentLine; long currentFilePointer = 0L;
+        while ((currentLine = csvBufferedRandomAccessFile.readLine()) != null) {
+            columnInfo.put(getColumnValue(currentLine), currentFilePointer);
+            currentFilePointer = csvBufferedRandomAccessFile.getFilePointer();
         }
 
+        csvBufferedRandomAccessFile.close();
         long endTime = System.nanoTime();
 
         return (endTime - startTime) / 1000000;
@@ -56,21 +58,19 @@ public class AirportsSearch {
 
         long startOutputTime = System.nanoTime();
 
-        RandomAccessFile csvRandomAccessFile = new RandomAccessFile("airports.csv", "r");
-        FileReader csvFileReader = new FileReader(csvRandomAccessFile.getFD());
-        BufferedReader csvBufferedReader = new BufferedReader(csvFileReader);
+        BufferedRandomAccessFile csvBufferedRandomAccessFile = new BufferedRandomAccessFile("airports.csv", "r", 2048);
         PrintWriter output = new PrintWriter(System.out);
         foundValues.forEach(str -> {
             try {
-                csvRandomAccessFile.seek(columnInfo.get(str));
-                output.println(str + "[" + csvBufferedReader.readLine() + "]");
+                csvBufferedRandomAccessFile.seek(columnInfo.get(str));
+                output.println(str + "[" + csvBufferedRandomAccessFile.readLine() + "]");
             } catch (IOException e) {
                 System.out.println("Произошла ошибка во время поиска\r\n" + e.getMessage() + "\r\n");
             }
         } );
 
         output.flush();
-        csvRandomAccessFile.close();
+        csvBufferedRandomAccessFile.close();
         long endOutputTime = System.nanoTime();
         System.out.println("\r\nЗатраченное на вывод найденных записей время - " + ((endOutputTime - startOutputTime) / 1000000) + " мс");
         searchTime = (endSearchTime - startSearchTime) / 1000000;
