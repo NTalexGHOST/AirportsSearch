@@ -17,18 +17,27 @@ public class AirportsSearch {
         return searchTime;
     }
 
+    // Простой самописный аналог String.split()
+    private String getColumnValue(String columnLine) {
+
+        for (int i = 0; i < (columnNum - 1); i++)
+            columnLine = columnLine.substring(columnLine.indexOf(',') + 1);
+        if (columnLine.indexOf(',') != -1) return columnLine.substring(0, columnLine.indexOf(','));
+        else return columnLine;
+    }
     public long startFileReading() throws IOException {
 
         long startTime = System.nanoTime();
 
         columnInfo = new TreeMap<>();
         RandomAccessFile csvRandomAccessFile = new RandomAccessFile("airports.csv", "r");
+        FileReader csvFileReader = new FileReader(csvRandomAccessFile.getFD());
+        BufferedReader csvBufferedReader = new BufferedReader(csvFileReader);
         String line; long currentFilePointer = 0L;
-        while ((line = csvRandomAccessFile.readLine()) != null) {
-            columnInfo.put(line.split(",")[columnNum - 1], currentFilePointer);
+        while ((line = csvBufferedReader.readLine()) != null) {
+            columnInfo.put(getColumnValue(line), currentFilePointer);
             currentFilePointer = csvRandomAccessFile.getFilePointer();
         }
-        csvRandomAccessFile.close();
 
         long endTime = System.nanoTime();
 
@@ -40,8 +49,8 @@ public class AirportsSearch {
         long startSearchTime = System.nanoTime();
 
         List<String> foundValues = columnInfo.keySet().stream()
-                .filter(str -> str.replace("\"", "")
-                        .toLowerCase().startsWith(queryString)).collect(Collectors.toList());
+                .filter(str -> str.replace("\"", "").toLowerCase()
+                        .startsWith(queryString)).collect(Collectors.toList());
 
         long endSearchTime = System.nanoTime();
 
@@ -49,12 +58,12 @@ public class AirportsSearch {
 
         RandomAccessFile csvRandomAccessFile = new RandomAccessFile("airports.csv", "r");
         FileReader csvFileReader = new FileReader(csvRandomAccessFile.getFD());
-        BufferedReader csvBufferedInputStream = new BufferedReader(csvFileReader);
+        BufferedReader csvBufferedReader = new BufferedReader(csvFileReader);
         PrintWriter output = new PrintWriter(System.out);
         foundValues.forEach(str -> {
             try {
                 csvRandomAccessFile.seek(columnInfo.get(str));
-                output.println(str + "[" + csvBufferedInputStream.readLine() + "]");
+                output.println(str + "[" + csvBufferedReader.readLine() + "]");
             } catch (IOException e) {
                 System.out.println("Произошла ошибка во время поиска\r\n" + e.getMessage() + "\r\n");
             }
